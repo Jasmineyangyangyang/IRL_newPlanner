@@ -524,9 +524,9 @@ def paper_figure_test_top3(show_steps):
     print("done")
 
 if __name__ == "__main__":
-    # train_data_prepare()   # [ 10  16  23  29  36  43  49  56  63  69  76  83  89  96 103]
+    train_data_prepare()   # [ 10  16  23  29  36  43  49  56  63  69  76  83  89  96 103]
 
-    maxEnt_IRL_newCost()   # new features
+    # maxEnt_IRL_newCost()   # new features
 
     # test_steps = test_data_prepare()  # test steps [63 30 28 87 13 61 82 68 51 17]
 

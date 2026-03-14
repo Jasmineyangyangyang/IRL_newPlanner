@@ -118,8 +118,10 @@ class natural_road_load():
                 left_y = float(row['left_y'])
                 right_x = float(row['right_x'])
                 right_y = float(row['right_y'])
+                left_center_cur = float(row['leftcenter_cur'])
+                right_center_cur = float(row['rightcenter_cur'])
 
-                road.append([left_x, left_y, right_x, right_y, center_x, center_y])
+                road.append([left_x, left_y, right_x, right_y, center_x, center_y, left_center_cur, right_center_cur])
 
         # input interest section of whole trajectory
         expert_trajectory = np.array(expert_trajectory)[:163,:]
