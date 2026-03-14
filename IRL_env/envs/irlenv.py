@@ -16,35 +16,6 @@ class RewardEnv():
     A IRL driving environment with expert data.
     """
     def __init__(self, lane_id):
-        """initialize the environment
-        self.ego_trajectory: read the cartesian coordinate from csv file
-                            format: np.array([expert_x, expert_y, self.expert_speed/km/h, self.lane_id])
-        self.road: left edge, center lane and right edge from csv file, 
-                            format: np.array([left_x, left_y, right_x, right_y, center_x, center_y])
-        self.obs_trajectory: the cartesian coordinate of the other lane
-                            format: array([x, y, speed/km/h, lane_id])
-
-        self.road_center: cartesian center lane of expert vehicle
-                            format: np.array([x, y])
-
-        self.road_center_frenet: Frenet coordinate of self.road_center
-                            format: array([x, y, yaw])  # yaw is global yaw
-        
-        self.expert_trajectory: Cartesian coordinate of self.ego_trajectory from start time to end
-                            format: array([x, y, speed])  speed=m/s
-
-        self.obstacle_trajectory: Cartesian(Frenet) corordinate of self.adjacent_trajectory from ego_start time+30 to end
-                            format: array([x, y, speed])  speed=m/s
-
-        self.feature_trajectory_frenet: Frenet coordinate for calculating features, it can be expert trajectory or planned trajectory
-                            format: array([x,y])
-
-        self.feature_trajectory: Cartesian coordinate for calculating features, it can be expert trajectory or planned trajectory
-                            format: array([x,y])
-
-        Args:
-            period (int): {0:maens expert data is centering trajectories}
-        """
         self.gamma = 0.95
         self.lane_id = lane_id
         self.road_width = 3.75       # m
