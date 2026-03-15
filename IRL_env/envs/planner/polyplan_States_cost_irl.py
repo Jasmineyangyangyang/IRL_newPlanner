@@ -704,7 +704,7 @@ class Polyplanner():
         for i in range(SIM_LOOP):
             planner_param = param
             # path = self.poly_trajectory(ego_x, ego_y, ego_speed, ob)
-            # NOTE:path = self.poly_trajectory(ego_x, ego_y, ego_speed, planner_param, target_speed, ob)
+            
             path = self.poly_trajectory(ego_x, ego_y, ego_speed, planner_param, target_speed,
                                         ob, ego_yaw=ego_yaw, ego_a=ego_a, ego_kappa=ego_kappa)
 
@@ -790,7 +790,7 @@ class Polyplanner():
         for i in range(SIM_LOOP):
             planner_param = param
             # path = self.poly_trajectory(ego_x, ego_y, ego_speed, ob)
-            # NOTE:path = self.poly_trajectory(ego_x, ego_y, ego_speed, planner_param, target_speed, ob)
+            
             # start = time.time()
             path = self.poly_trajectory(ego_x, ego_y, ego_speed, planner_param, target_speed,
                                         ob, ego_yaw=ego_yaw, ego_a=ego_a, ego_kappa=ego_kappa)
