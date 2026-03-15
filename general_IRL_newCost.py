@@ -15,7 +15,7 @@ n_iters = 200
 lr = 0.05
 lam = 0.01
 # feature_num = 5 # first 5 features   # for maxEnt_IRL()
-feature_num = [10, 11, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27] # maxEnt_IRL_new()
+feature_num = [10, 11, 16, 17, 18, 19, 20, 21, 22, 23] # maxEnt_IRL_new()
 lane_id = 1     # 0 means outside center trajectory, 1 means inside center trajectory
 render_env = False # to show sample trajectories(black) expert trajectory(red) and top3 optimal reward trajectory(blue) 
 np.random.seed(0)
@@ -524,9 +524,9 @@ def paper_figure_test_top3(show_steps):
     print("done")
 
 if __name__ == "__main__":
-    train_data_prepare()   # [ 10  16  23  29  36  43  49  56  63  69  76  83  89  96 103]
+    # train_data_prepare()   # [ 10  16  23  29  36  43  49  56  63  69  76  83  89  96 103]
 
-    # maxEnt_IRL_newCost()   # new features
+    maxEnt_IRL_newCost()   # new features
 
     # test_steps = test_data_prepare()  # test steps [63 30 28 87 13 61 82 68 51 17]
 
