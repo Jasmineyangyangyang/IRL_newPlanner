@@ -105,12 +105,16 @@ def maxEnt_IRL_newCost():
     # RP_total = []
     # RP_max = []
     # RP_mean = []
+    # LON_ACC = []
+    # LAT_ACC= []
     # for buffer_scene in buffer:
     #     for traj in buffer_scene:
     #         traj_features_temp.append(traj[2])
     #         RP_total.append(traj[2][9])
     #         RP_max.append(traj[2][10])
     #         RP_mean.append(traj[2][11])
+    #         LON_ACC.append(traj[2][20])
+    #         LAT_ACC.append(traj[2][21])
     # max_v = np.max(traj_features_temp, axis=0) 
     # min_v = np.min(traj_features_temp, axis=0)
     # plt.plot(RP_total, marker='o')
@@ -126,13 +130,23 @@ def maxEnt_IRL_newCost():
     # 若 min jerk =-0.5, 做完 Min-Max 后，物理上的“0 Jerk”会被映射到类似 非 0 的位置。
     
     # RP_total的最大值为0.6,RP_max的最大值为0.018，,RP_mean的最大值为0.0069
+    # 在求norm_acc 和norm_jerk时，分母都用的2.5，这样不太均衡
+    # 调整：
     rp_alpha_max = 3.0 / 0.05
     rp_alpha_mean = 3.0 / 0.01
+    MAX_LON_ACC = 3.0   # 或者 2.5
+    MAX_LON_JERK = 2.5
+    MAX_LAT_ACC = 0.5   # 贴合你跑出来的 0.3 上限，稍微留点裕度
+    MAX_LAT_JERK = 1.0  # 贴合你跑出来的 1.0 上限
     for scene in buffer:
         for traj in scene:
             traj[2][10] = 1 - np.exp(-rp_alpha_max * traj[2][10])
             traj[2][11] = 1 - np.exp(-rp_alpha_mean * traj[2][11])
-    
+            traj[2][20] = traj[2][20] * 2.5 / MAX_LON_ACC  # LON_ACC的最大值从2.5改成3.0
+            traj[2][21] = traj[2][21] * 2.5 / MAX_LAT_ACC  # LAT_ACC的最大值从2.5改成0.5
+            traj[2][22] = traj[2][22] * 2.5 / MAX_LON_JERK  # LON_JERK的最大值从2.5改成2.5
+            traj[2][23] = traj[2][23] * 2.5 / MAX_LAT_JERK  # LAT_JERK的最大值从2.5改成1.0
+            
     expert_traj_features = []
     for buffer_scene in buffer:
         exp_feature_tmp = []

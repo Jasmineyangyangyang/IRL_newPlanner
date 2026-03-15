@@ -201,12 +201,19 @@ def calc_frenet_path(lat_param, lon_param):
     
 def calc_frenet_paths(csp, s0, s0_dot, s0_ddot, l0, l0_dot, l0_ddot, planner_param, TARGET_SPEED):
     """# target speed [m/s]"""
-    MAX_JERK = 2.5  # maximum jerk error[m/sss]
-    MAX_ACC = 2.5  # maximum acceleration error [m/ss]
+    MAX_LON_ACC = 3.0   # 或者 2.5
+    MAX_LON_JERK = 2.5
+    MAX_LAT_ACC = 0.5   # 贴合你跑出来的 0.3 上限，稍微留点裕度
+    MAX_LAT_JERK = 1.0  # 贴合你跑出来的 1.0 上限
     max_speed_error = 2 * D_T_S * N_S_SAMPLE  # maximum possible speed error based on sampling range
 
     frenet_paths = []
-    test_cost = []
+    # test_cost = []
+    # test_lat_acc = []
+    # test_lon_acc = []
+    # test_lon_jerk = []
+    # test_lat_jerk = []
+    # test_l_dot = []
 
     for di in np.arange(-MAX_ROAD_WIDTH, MAX_ROAD_WIDTH+D_ROAD_W, D_ROAD_W):
     # Lateral motion planning
@@ -221,6 +228,11 @@ def calc_frenet_paths(csp, s0, s0_dot, s0_ddot, l0, l0_dot, l0_ddot, planner_par
         fp.l_ddot = [lat_qp.calc_second_derivative(t) for t in fp.t]
         fp.l_dddot = [lat_qp.calc_third_derivative(t) for t in fp.t]
         fp.lat_param = [l0, l0_dot, l0_ddot, di, Ti]
+        # test_l_dot.append(max(np.abs(fp.l_dot)))
+        # test_lat_acc.append(max(np.abs(fp.l_ddot)))
+        # test_lat_jerk.append(max(np.abs(fp.l_dddot)))
+        # if max(test_lat_jerk) > 1.0:
+        #     print(f"max lat jerk: {max(test_lat_jerk)}, max lat acc: {max(test_lat_acc)}")
 
         # Longitudinal motion planning (Velocity keeping)
         for tv in np.arange(TARGET_SPEED - D_T_S * N_S_SAMPLE,
@@ -234,7 +246,9 @@ def calc_frenet_paths(csp, s0, s0_dot, s0_ddot, l0, l0_dot, l0_ddot, planner_par
             tfp.s_ddot = [lon_qp.calc_second_derivative(t) for t in fp.t]
             tfp.s_dddot = [lon_qp.calc_third_derivative(t) for t in fp.t]
             tfp.lon_param = [s0, s0_dot, s0_ddot, tv, Ti]
-
+            # test_lon_acc.append(max(np.abs(tfp.s_ddot)))
+            # test_lon_jerk.append(max(np.abs(tfp.s_dddot)))
+            
             # =====================================
             # 将权重限制在 [0,1] 且三者和为 1，方便直接试 [0,1] 组合
             # =====================================
@@ -257,7 +271,8 @@ def calc_frenet_paths(csp, s0, s0_dot, s0_ddot, l0, l0_dot, l0_ddot, planner_par
 
             # efficiency cost
             raw_speed_error = (TARGET_SPEED - tfp.s_dot[-1]) ** 2
-            raw_acc_error = sum(np.power(tfp.s_ddot, 2)) * DT  # square of acceleration error
+            raw_acc_lon = sum(np.power(tfp.s_ddot, 2)) * DT  # square of acceleration error
+            raw_acc_lat = sum(np.power(tfp.l_ddot, 2)) * DT  # square of lat acc
 
             # offset from lane center at the end of prediction horizon
             # l_ref = -MAX_ROAD_WIDTH + 2.0 * MAX_ROAD_WIDTH * KD
@@ -270,9 +285,9 @@ def calc_frenet_paths(csp, s0, s0_dot, s0_ddot, l0, l0_dot, l0_ddot, planner_par
             # =================================================
             # physical normalization
             # =================================================
-            norm_jerk_cost = (raw_lat_jerk + raw_lon_jerk) / (MAX_JERK ** 2 * Ti)  # normalized jerk cost
+            norm_jerk_cost = raw_lat_jerk / (MAX_LAT_JERK ** 2 * Ti) + raw_lon_jerk / (MAX_LON_JERK ** 2 * Ti)  # normalized jerk cost
             norm_speed_cost = raw_speed_error / (max_speed_error ** 2)  # normalized speed cost
-            norm_acc_cost = raw_acc_error / (MAX_ACC ** 2 * Ti)  # normalized acceleration cost
+            norm_acc_cost = raw_acc_lon / (MAX_LON_ACC ** 2 * Ti) + raw_acc_lat / (MAX_LAT_ACC ** 2 * Ti)  # normalized acceleration cost
             norm_bias_cost = raw_bias_error / (2*MAX_ROAD_WIDTH)  # normalized offset cost
             norm_progress_cost = -progress_reward / (TARGET_SPEED * Ti)  # normalized progress cost
 
@@ -287,7 +302,7 @@ def calc_frenet_paths(csp, s0, s0_dot, s0_ddot, l0, l0_dot, l0_ddot, planner_par
             tfp.cf = KJ * tfp.cd + norm_bias_cost + KT * tfp.cv
 
             frenet_paths.append(tfp)
-            test_cost.append(tfp.cd)
+            # test_cost.append(tfp.cd)
 
     return frenet_paths
 
