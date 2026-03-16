@@ -434,12 +434,12 @@ class RewardEnv():
         if self.feature_trajectory.shape[0] != self.obstacle_trajectory.shape[0]:
             print("trajectory length is not equal")
             min_length = min(self.feature_trajectory.shape[0], self.obstacle_trajectory.shape[0])
-            self.feature_trajectory_local = self.feature_trajectory[:min_length]
-            self.obstacle_trajectory_local = self.obstacle_trajectory[:min_length]
+            feature_trajectory_local = self.feature_trajectory[:min_length, [0,1,3]]
+            obstacle_trajectory_local = self.obstacle_trajectory[:min_length]
         else:
-            self.feature_trajectory_local = self.feature_trajectory
-            self.obstacle_trajectory_local = self.obstacle_trajectory
-        ego_STLCs, ego_CTLCs, ego_CTTCs, ego_TADs = risk_ind_cal(self.feature_trajectory_local, self.obstacle_trajectory_local, self.road_left, self.road_right)
+            feature_trajectory_local = self.feature_trajectory[:,[0,1,3]]
+            obstacle_trajectory_local = self.obstacle_trajectory
+        ego_STLCs, ego_CTLCs, ego_CTTCs, ego_TADs = risk_ind_cal(feature_trajectory_local, obstacle_trajectory_local, self.road_left, self.road_right)
         risk_cal_end_time = time.time()
         print(f"risk features calculating costs {risk_cal_end_time - risk_cal_start_time} seconds")
 
