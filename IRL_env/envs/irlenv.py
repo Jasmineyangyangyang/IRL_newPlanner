@@ -4,6 +4,7 @@ from planner.global_road import natural_road_load #load global road csv file
 from IRL_env.envs.planner.polyplan_States_cost_irl import Polyplanner  # for target_v, target_d planner
 # from data.polyplan import PolyPlanner  # for K_J, K_D planner
 from risk.risk_evaluation import risk_ind_cal
+from scipy.ndimage import gaussian_filter1d
 import matplotlib.pyplot as plt
 plt.rc('font', family='Times New Roman')
 import matplotlib.ticker as ticker
@@ -92,6 +93,7 @@ class RewardEnv():
             # frenet_trajectory[i] = [longitudinal_dis, lateral_offset, speed]
             expert_trajectory[i] = [x, y, yaw, speed, a, curvature]
         expert_trajectory[:,2] = np.unwrap(expert_trajectory[:,2])
+        expert_trajectory[:,-1] = gaussian_filter1d(expert_trajectory[:,-1], sigma=3.0)
         return expert_trajectory    # cartesian trajcetory, array: [x, y, speed(m/s)]
     
     def cartesian_to_frenet(self, x, y):
