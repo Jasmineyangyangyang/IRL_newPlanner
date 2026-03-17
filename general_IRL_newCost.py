@@ -20,8 +20,8 @@ lane_id = 1     # 0 means outside center trajectory, 1 means inside center traje
 render_env = False # to show sample trajectories(black) expert trajectory(red) and top3 optimal reward trajectory(blue) 
 np.random.seed(0)
 bufferfilepath = './features_buffer/buffer_2603_04.pkl'
-maxEnt_training_log_filepath = './training_log/general_training_log_2603_04.csv'
-maxEnt_theta_filepath = './theta_file/theta_2603_04.pkl'
+maxEnt_training_log_filepath = './training_log/general_training_log_2603_04_2.csv'
+maxEnt_theta_filepath = './theta_file/theta_2603_04_2.pkl'
 
 def train_data_prepare():
     # Cache
@@ -139,8 +139,10 @@ def maxEnt_IRL_newCost():
     MAX_LAT_ACC = 0.5   # 贴合你跑出来的 0.3 上限，稍微留点裕度
     MAX_LAT_JERK = 1.0  # 贴合你跑出来的 1.0 上限
 
+    test = []
     for scene in buffer:
         for traj in scene:
+            test.append(traj[2][16])
             traj[2][10] = 1 - np.exp(-rp_alpha_max * traj[2][10])
             traj[2][11] = 1 - np.exp(-rp_alpha_mean * traj[2][11])
             traj[2][20] = traj[2][20] * 2.5 / MAX_LON_ACC  # LON_ACC的最大值从2.5改成3.0
@@ -153,8 +155,16 @@ def maxEnt_IRL_newCost():
         exp_feature_tmp = []
         for num in feature_num:
             # for To fix the conversion from global coordinates to Frenet coordinates caused by curvature fluctuations
-            if num == 21:
+            if num == 16:
+                exp_feature_tmp.append(0.0) # 因为expert traj的 norm_ego_lateral_offset 基本上是0，所以直接设置为0，避免噪声影响
+            elif num == 17:
+                exp_feature_tmp.append(0.0) # 因为expert traj的 norm_ego_lateral_offset_squared 基本上是0，所以直接设置为0，避免噪声影响
+            elif num == 18:
+                exp_feature_tmp.append(0.0) # 因为expert traj的 norm_ego_lateral_offset_max 基本上是0，所以直接设置为0，避免噪声影响
+            elif num == 21:
                 exp_feature_tmp.append(0.0) # 因为expert traj的LAT_ACC基本上是0，所以直接设置为0，避免噪声影响
+            elif num == 23:
+                exp_feature_tmp.append(0.0) # 因为expert traj的LAT_JERK基本上是0，所以直接设置为0，避免噪声影响
             else:
                 exp_feature_tmp.append(buffer_scene[-1][2][num])
             # exp_feature_tmp.append(buffer_scene[-1][2][num])
