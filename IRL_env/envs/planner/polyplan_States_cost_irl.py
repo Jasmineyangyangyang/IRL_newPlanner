@@ -1,27 +1,27 @@
-import numpy as np
-import matplotlib.pyplot as plt
-import copy
-import math
-from planner.CubicSpline import cubic_spline_planner
-from planner.global_road import natural_road_load
-from scipy.ndimage import gaussian_filter1d 
-
-# # for debug
 # import numpy as np
 # import matplotlib.pyplot as plt
 # import copy
 # import math
-# import sys
-# import os
-# import pathlib
-# current_dir = pathlib.Path(os.getcwd())
-# for subdir in current_dir.iterdir():
-#     if subdir.is_dir():
-#         sys.path.append(str(subdir))
-# from CubicSpline import cubic_spline_planner
-# from global_road import natural_road_load
+# from planner.CubicSpline import cubic_spline_planner
+# from planner.global_road import natural_road_load
 # from scipy.ndimage import gaussian_filter1d 
-# import time
+
+# for debug
+import numpy as np
+import matplotlib.pyplot as plt
+import copy
+import math
+import sys
+import os
+import pathlib
+current_dir = pathlib.Path(os.getcwd())
+for subdir in current_dir.iterdir():
+    if subdir.is_dir():
+        sys.path.append(str(subdir))
+from CubicSpline import cubic_spline_planner
+from global_road import natural_road_load
+from scipy.ndimage import gaussian_filter1d 
+import time
 
 """
 单车道宽度：3.75m
@@ -687,7 +687,7 @@ class Polyplanner():
         ego_a = 0.0
         target_speed = 60.0 / 3.6
         ob = np.array([])
-        param = [0.0, 0.5]  # planner_param: [KJ, KD]
+        param = [1.0, 0.8]  # planner_param: [KJ, KD]
 
         SIM_LOOP = 8000 # simulation loop
 
@@ -770,7 +770,7 @@ class Polyplanner():
         ego_a = 0.0
         target_speed = 55.0 / 3.6
         ob = np.array([])
-        param = [0.5, 0.5]
+        param = [1.0, 0.8]
 
         SIM_LOOP = 800 # simulation loop
 
