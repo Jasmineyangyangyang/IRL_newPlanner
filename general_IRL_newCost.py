@@ -20,8 +20,8 @@ lane_id = 1     # 0 means outside center trajectory, 1 means inside center traje
 render_env = False # to show sample trajectories(black) expert trajectory(red) and top3 optimal reward trajectory(blue) 
 np.random.seed(0)
 bufferfilepath = './features_buffer/buffer_2603_04.pkl'
-maxEnt_training_log_filepath = './training_log/general_training_log_2603_04_2.csv'
-maxEnt_theta_filepath = './theta_file/theta_2603_04_2.pkl'
+maxEnt_training_log_filepath = './training_log/general_training_log_2603_04_3.csv'
+maxEnt_theta_filepath = './theta_file/theta_2603_04_3.pkl'
 
 def train_data_prepare():
     # Cache
@@ -165,6 +165,10 @@ def maxEnt_IRL_newCost():
                 exp_feature_tmp.append(0.0) # 因为expert traj的LAT_ACC基本上是0，所以直接设置为0，避免噪声影响
             elif num == 23:
                 exp_feature_tmp.append(0.0) # 因为expert traj的LAT_JERK基本上是0，所以直接设置为0，避免噪声影响
+            elif num == 20:
+                exp_feature_tmp.append(0.0) # 因为expert traj的LON_ACC基本上是0，所以直接设置为0，避免噪声影响
+            elif num == 22:
+                exp_feature_tmp.append(0.0) # 因为expert traj的LON_JERK基本上是0，所以直接设置为0，避免噪声影响
             else:
                 exp_feature_tmp.append(buffer_scene[-1][2][num])
             # exp_feature_tmp.append(buffer_scene[-1][2][num])
